@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
 import { TagsService } from './tag.service';
 import { AddTagDto } from './entities/dto/create.tag.dto';
 import { Tag } from './entities/tag.entity';
@@ -81,21 +73,6 @@ export class TagsController {
     const identifiersList = identifiers.split(',').map((id) => id.trim());
 
     return this.tagsService.findIdentifiersWithTagsList(identifiersList);
-  }
-
-  @Get('/identifiers/:tag')
-  @ApiOperation({
-    summary: 'Find identifiers for a specific tag',
-    description: 'Retrieves identifiers associated with a specific tag',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Array of identifiers found',
-    type: String,
-    isArray: true,
-  })
-  async findIdentifiersForTag(@Param('tag') tag: string): Promise<string[]> {
-    return this.tagsService.findIdentifiersForTag(tag);
   }
 
   @Delete('removeTag')

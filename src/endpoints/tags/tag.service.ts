@@ -83,17 +83,6 @@ export class TagsService {
     return identifiers.map((result) => result.identifier);
   }
 
-  async findIdentifiersForTag(tag: string): Promise<string[]> {
-    const identifiers = await this.tagRepository
-      .createQueryBuilder('tag')
-      .select('tag.identifier', 'identifier')
-      .where('tag.tag = :tag', { tag })
-      .groupBy('tag.identifier')
-      .getRawMany();
-
-    return identifiers.map((result) => result.identifier);
-  }
-
   async findIdentifiersWithTagsList(
     identifiers: string[],
   ): Promise<Record<string, string[]>> {

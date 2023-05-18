@@ -17,14 +17,14 @@ features:
     enabled: true
     port: 4000
   cacheWarmer:
-    enabled: true
+    enabled: false
     port: 5201
   transactionProcessor:
-    enabled: true
+    enabled: false
     port: 5202
     maxLookBehind: 100
   queueWorker:
-    enabled: true
+    enabled: false
     port: 8000
   keepAliveAgent:
     enabled: true
