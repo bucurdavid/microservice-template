@@ -12,11 +12,12 @@ import { QueueWorkerModule } from './workers/queue.worker.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { SocketAdapter } from './websockets/socket.adapter';
 import cookieParser from 'cookie-parser';
-import { CacheWarmerModule } from './crons/cache.warmer/cache.warmer.module';
-import { TransactionProcessorModule } from './crons/transaction.processor/transaction.processor.module';
 import { PubSubListenerModule } from './common/pubsub/pub.sub.listener.module';
 import { SdkNestjsConfigServiceImpl } from './common/api-config/sdk.nestjs.config.service.impl';
-import { LoggingInterceptor, MetricsService } from '@multiversx/sdk-nestjs-monitoring';
+import {
+  LoggingInterceptor,
+  MetricsService,
+} from '@multiversx/sdk-nestjs-monitoring';
 import { NativeAuthGuard } from '@multiversx/sdk-nestjs-auth';
 import { LoggerInitializer } from '@multiversx/sdk-nestjs-common';
 import { CacheService, CachingInterceptor } from '@multiversx/sdk-nestjs-cache';
@@ -36,10 +37,16 @@ async function bootstrap() {
   const apiConfigService = publicApp.get<ApiConfigService>(ApiConfigService);
   const cachingService = publicApp.get<CacheService>(CacheService);
   const metricsService = publicApp.get<MetricsService>(MetricsService);
-  const httpAdapterHostService = publicApp.get<HttpAdapterHost>(HttpAdapterHost);
+  const httpAdapterHostService =
+    publicApp.get<HttpAdapterHost>(HttpAdapterHost);
 
   if (apiConfigService.getIsAuthActive()) {
-    publicApp.useGlobalGuards(new NativeAuthGuard(new SdkNestjsConfigServiceImpl(apiConfigService), cachingService));
+    publicApp.useGlobalGuards(
+      new NativeAuthGuard(
+        new SdkNestjsConfigServiceImpl(apiConfigService),
+        cachingService,
+      ),
+    );
   }
 
   const httpServer = httpAdapterHostService.httpAdapter.getHttpServer();
@@ -61,7 +68,10 @@ async function bootstrap() {
 
   publicApp.useGlobalInterceptors(...globalInterceptors);
 
-  const description = readFileSync(join(__dirname, '..', 'docs', 'swagger.md'), 'utf8');
+  const description = readFileSync(
+    join(__dirname, '..', 'docs', 'swagger.md'),
+    'utf8',
+  );
 
   let documentBuilder = new DocumentBuilder()
     .setTitle('MultiversX Microservice API')
@@ -86,16 +96,6 @@ async function bootstrap() {
   if (apiConfigService.getIsPrivateApiFeatureActive()) {
     const privateApp = await NestFactory.create(PrivateAppModule);
     await privateApp.listen(apiConfigService.getPrivateApiFeaturePort());
-  }
-
-  if (apiConfigService.getIsCacheWarmerFeatureActive()) {
-    const cacheWarmerApp = await NestFactory.create(CacheWarmerModule);
-    await cacheWarmerApp.listen(apiConfigService.getCacheWarmerFeaturePort());
-  }
-
-  if (apiConfigService.getIsTransactionProcessorFeatureActive()) {
-    const transactionProcessorApp = await NestFactory.create(TransactionProcessorModule);
-    await transactionProcessorApp.listen(apiConfigService.getTransactionProcessorFeaturePort());
   }
 
   if (apiConfigService.getIsQueueWorkerFeatureActive()) {
@@ -125,11 +125,21 @@ async function bootstrap() {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   pubSubApp.listen();
 
-  logger.log(`Public API active: ${apiConfigService.getIsPublicApiFeatureActive()}`);
-  logger.log(`Private API active: ${apiConfigService.getIsPrivateApiFeatureActive()}`);
-  logger.log(`Transaction processor active: ${apiConfigService.getIsTransactionProcessorFeatureActive()}`);
-  logger.log(`Cache warmer active: ${apiConfigService.getIsCacheWarmerFeatureActive()}`);
-  logger.log(`Queue worker active: ${apiConfigService.getIsQueueWorkerFeatureActive()}`);
+  logger.log(
+    `Public API active: ${apiConfigService.getIsPublicApiFeatureActive()}`,
+  );
+  logger.log(
+    `Private API active: ${apiConfigService.getIsPrivateApiFeatureActive()}`,
+  );
+  logger.log(
+    `Transaction processor active: ${apiConfigService.getIsTransactionProcessorFeatureActive()}`,
+  );
+  logger.log(
+    `Cache warmer active: ${apiConfigService.getIsCacheWarmerFeatureActive()}`,
+  );
+  logger.log(
+    `Queue worker active: ${apiConfigService.getIsQueueWorkerFeatureActive()}`,
+  );
 }
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises

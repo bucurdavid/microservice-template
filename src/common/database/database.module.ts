@@ -1,8 +1,8 @@
-import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { User } from "src/endpoints/users/entities/user.entity";
-import { ApiConfigModule } from "../api-config/api.config.module";
-import { ApiConfigService } from "../api-config/api.config.service";
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ApiConfigModule } from '../api-config/api.config.module';
+import { ApiConfigService } from '../api-config/api.config.service';
+import { Tag } from 'src/endpoints/tags/entities/tag.entity';
 
 @Module({
   imports: [
@@ -11,16 +11,16 @@ import { ApiConfigService } from "../api-config/api.config.service";
       useFactory: (apiConfigService: ApiConfigService) => ({
         type: 'mysql',
         ...apiConfigService.getDatabaseConnection(),
-        entities: [User],
+        entities: [Tag], // Add the Tag entity here
         keepConnectionAlive: true,
         synchronize: true,
       }),
       inject: [ApiConfigService],
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([Tag]), // Add the Tag entity here as well
   ],
   exports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([Tag]), // Export the Tag entity as well
   ],
 })
-export class DatabaseModule { }
+export class DatabaseModule {}

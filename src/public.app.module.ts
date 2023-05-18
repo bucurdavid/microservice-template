@@ -5,16 +5,8 @@ import { DynamicModuleUtils } from './utils/dynamic.module.utils';
 import { LoggingModule } from '@multiversx/sdk-nestjs-common';
 
 @Module({
-  imports: [
-    LoggingModule,
-    EndpointsServicesModule,
-    EndpointsControllersModule,
-  ],
-  providers: [
-    DynamicModuleUtils.getNestJsApiConfigService(),
-  ],
-  exports: [
-    EndpointsServicesModule,
-  ],
+  imports: [LoggingModule, EndpointsServicesModule, EndpointsControllersModule],
+  providers: [DynamicModuleUtils.getNestJsApiConfigService()],
+  exports: [EndpointsServicesModule],
 })
-export class PublicAppModule { }
+export class PublicAppModule {}
